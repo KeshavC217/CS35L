@@ -1,0 +1,18 @@
+#!/bin/bash
+# ScripTest
+tr [:upper:] [:lower:] | 
+sed "s/\`/\'/g" | 
+sed "s/<u>//g" | 
+sed "s/<\/u>//g" | 
+tr -d "?" | 
+grep -E "<td(!>)*>[pk\'mnwlhaeiou ]*<\/td> *" | 
+tr -d "<>,td/" | 
+sed "s/^[ /t]*//" |
+sed "s/\n//g" | 
+sed "/^$/d" |
+sort 
+
+
+
+
+

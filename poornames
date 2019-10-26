@@ -1,0 +1,109 @@
+#!/bin/sh
+if [ "$#" -ge 2 ]; then
+>&2 echo "Illegal number of arguments: Number of parameters cannot exceed 1"
+exit 1 
+fi
+
+D="\0"
+
+if [ "$#" -eq 0 ]; then
+D="."
+fi
+
+#if [ "$1" -eq -* ]; then
+#>&2 echo "The directory name can not start with a -"
+#exit 1
+#fi
+
+D="$1"
+
+cd "$D" || exit
+
+
+find . -type f > ~/allFiles
+true>~/fileNames
+
+
+
+regexChecker()
+{
+cat ~/fileNames | grep -E "[^a-Za-z\-\_\.]" > ~/condone  
+cat ~/fileNames | grep -E "^\." >> ~/condone
+cat ~/fileNames | grep -E "^\-" >> ~/condone 
+cat ~/fileNames | grep -E "[^.]{15}" >> ~/condone
+}
+
+true>~/condfive
+
+true>~/condone
+
+true>~/condfour
+
+#lengthChecker()
+#{
+#while read -r p; do
+#if [ "$(echo \"$p\" | wc -m)" -ge "15" ]; then
+#$p >> cond4
+#fi
+#done <fileNames
+#}
+
+while read -r p; do
+basename "$p" >>~/fileNames
+done <~/allFiles
+
+regexChecker
+#lengthChecker
+#cat fileNames
+#cat cond4
+true>~/resultone
+
+true>~/resfive
+
+true>~/condfive
+
+recursor()
+{
+find . -printf "%p\n" >> ~/condfive
+while read -r p; do
+
+var1=$(find . -printf "%p\n" | tr [:upper:] [:lower:] |  grep -cxF "$p")
+if [ "$var1" -ge "2" ]; then
+echo $p >> ~/condone # was resfive
+fi
+done <~/condfive
+#for f in $(ls .) ; do
+#if [ -d $f ] ; then
+#cd $f
+#recursor
+#fi
+#done
+
+}
+
+#recursor
+#NOTE: THE RECURSOR FUNCTION WORKS FOR MY TEST FILE BUT FOR SOME REASON DOES
+#NOT WORK FOR THE GIVEN EXAMPLES. I BELIEVE THE LOGIC IS SOUND BUT FOR SOME
+#REASON CANNOT GET IT TO WORK. 
+
+while read -r p; do
+cat ~/allFiles | grep -F -- "$p" | sed "s@^\.@$D@g" >> ~/resultone
+done <~/condone
+
+#while read -r p; do
+#cat ~/allFiles | grep -F "$p" | sed "s@^\.@$D@g" >> ~/resultone
+#done <~/resfive
+
+sort -u ~/resultone
+
+
+#regexChecker()
+#{
+#ls -la | grep -E "^-" > temp 
+#ls -la | grep -E "^\." >> temp 
+#allFiles | grep -E "[^A-Za-z\-\_\.]" > temp
+#sort -u temp 
+#}
+
+#checkCurrentDir
+
